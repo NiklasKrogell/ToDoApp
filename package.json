@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-vector-icons/material-icons": "^12.4.1",
     "@react-native/new-app-screen": "0.83.1",
     "i18next": "^25.8.4",
     "i18next-browser-languagedetector": "^8.2.0",

@@ -4,11 +4,14 @@ import React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { ToDoItem } from '../../../ToDoItem';
 import { EmptyList } from './EmptyList';
+import { ToDoListItem } from './ToDoListItem';
 
 interface Props {
     toDos: ToDoItem[],
     listHeaderText: string,
     emptyListText: string,
+    toggleCompleteToDoItem: (item: ToDoItem) => void,
+    deleteToDoItem: (item: ToDoItem) => void,
 };
 
 export const ToDoList: React.FC<Props> = (props) => {
@@ -22,9 +25,9 @@ export const ToDoList: React.FC<Props> = (props) => {
                 data={props.toDos}
                 keyExtractor={(item) => item.id}
                 renderItem={({item}) => (
-                <View style={styles.listItem}>
-                    <Text style={styles.listItemText}>{item.title}</Text>
-                </View>
+                  <ToDoListItem toDoItem={item} 
+                    toggleCompleteToDoItem={props.toggleCompleteToDoItem}
+                    deleteToDoItem={props.deleteToDoItem}/>
                 )}
                 ListEmptyComponent = {<EmptyList title={props.emptyListText}/>}
             />

@@ -19,9 +19,9 @@ import { ToDoList } from './src/components/ToDoList/ToDoList';
 
 function App() {
   // Dev
-  //const [ToDos, setToDos] = useState<ToDoItem[]>(testToDos);
+  const [toDos, setToDos] = useState<ToDoItem[]>(testToDos);
   // Production
-  const [ToDos, setToDos] = useState<ToDoItem[]>([]);
+  // const [ToDos, setToDos] = useState<ToDoItem[]>([]);
 
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -36,9 +36,30 @@ function App() {
       title: text,
       completed: false,
     };
-    const nToDos = [toDoItem, ...ToDos];
+    const nToDos = [toDoItem, ...toDos];
     setToDos(nToDos);
     console.log(`addToDoItem called with ${text} state: ${JSON.stringify(nToDos)}`);
+  };
+
+  const toggleCompleteToDoItem = (toDoItem: ToDoItem) => {
+    const id = toDoItem.id;
+
+    // Deep copy of items
+    const nToDos = JSON.parse(JSON.stringify(toDos)) as ToDoItem[];
+
+    nToDos.map((item) => {
+      if(item.id === id){
+        item.completed = !item.completed;
+      }
+    });
+    setToDos(nToDos);
+  };
+
+  const deleteToDoItem = (toDoItem: ToDoItem) => {
+    // Deep copy
+    let nToDos = JSON.parse(JSON.stringify(toDos)) as ToDoItem[];
+    nToDos = toDos.filter(item => item.id !== toDoItem.id);
+    setToDos(nToDos);
   };
 
   return (
@@ -55,7 +76,12 @@ function App() {
         </View>
 
         <View style={styles.contentLower}>
-          <ToDoList toDos={ToDos} listHeaderText='Your to-do list' emptyListText='Add things to do'/>
+          <ToDoList 
+            toDos={toDos} 
+            listHeaderText='Your to-do list' 
+            emptyListText='Add things to do'
+            toggleCompleteToDoItem={toggleCompleteToDoItem}
+            deleteToDoItem={deleteToDoItem}/>
         </View>
       </View>
 
