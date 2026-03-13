@@ -5,7 +5,7 @@
  * @format
  */
 
-import { StatusBar, StyleSheet, useColorScheme, View, Text, FlatList } from 'react-native';
+import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import {
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
@@ -16,12 +16,16 @@ import { useState } from 'react';
 import { testToDos, ToDoItem } from './ToDoItem';
 import uuid from 'react-native-uuid';
 import { ToDoList } from './src/components/ToDoList/ToDoList';
+import { FilterBar } from './src/components/Filters/FilterBar';
 
 function App() {
   // Dev
   const [toDos, setToDos] = useState<ToDoItem[]>(testToDos);
   // Production
-  // const [ToDos, setToDos] = useState<ToDoItem[]>([]);
+  // const [toDos, setToDos] = useState<ToDoItem[]>([]);
+
+  // Selected filter
+  const [selectedFilter, setSelectedFilter] = useState<String>("ALL");
 
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -62,6 +66,18 @@ function App() {
     setToDos(nToDos);
   };
 
+  // Change filter state
+  const showAllItems = () => setSelectedFilter("ALL");
+  const showActiveItems = () => setSelectedFilter("ACTIVE");
+  const showCompleteItems = () => setSelectedFilter("COMPLETE");
+
+  // Filtered items
+  const filteredToDos = toDos.filter(item => {
+    if (selectedFilter === "ACTIVE") return !item.completed;
+    if (selectedFilter === "COMPLETE") return item.completed;
+    return true;
+  });
+
   return (
     <SafeAreaProvider>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor="#3498db" />
@@ -77,12 +93,20 @@ function App() {
 
         <View style={styles.contentLower}>
           <ToDoList 
-            toDos={toDos} 
+            toDos={filteredToDos} 
             listHeaderText='Your to-do list' 
             emptyListText='Add things to do'
             toggleCompleteToDoItem={toggleCompleteToDoItem}
             deleteToDoItem={deleteToDoItem}/>
         </View>
+      </View>
+
+      <View style={styles.filters}>
+        <FilterBar
+          showAllItems={showAllItems}
+          showActiveItems={showActiveItems}
+          showCompleteItems={showCompleteItems}
+          filter={selectedFilter}/>
       </View>
 
       {/* Footer */}
@@ -119,6 +143,9 @@ const styles = StyleSheet.create({
   text: {
     color: "white",
     fontSize: 18,
+  },
+  filters: {
+    width: "100%",
   },
 });
 

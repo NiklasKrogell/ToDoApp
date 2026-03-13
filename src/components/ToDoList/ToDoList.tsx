@@ -21,6 +21,7 @@ export const ToDoList: React.FC<Props> = (props) => {
                 <Text style={styles.listHeaderText}>{props.listHeaderText}</Text>
             </View>
         
+            {/* Items list */}
             <FlatList
                 data={props.toDos}
                 keyExtractor={(item) => item.id}
