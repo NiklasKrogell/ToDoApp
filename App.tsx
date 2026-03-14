@@ -12,17 +12,21 @@ import {
 import { Header } from './src/components/header/Header';
 import { Footer } from './src/components/Footer/Footer';
 import { ToDoInput } from './src/components/ToDoInput/ToDoInput';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { testToDos, ToDoItem } from './ToDoItem';
 import uuid from 'react-native-uuid';
 import { ToDoList } from './src/components/ToDoList/ToDoList';
 import { FilterBar } from './src/components/Filters/FilterBar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function App() {
   // Dev
-  const [toDos, setToDos] = useState<ToDoItem[]>(testToDos);
+  // const [toDos, setToDos] = useState<ToDoItem[]>(testToDos);
   // Production
-  // const [toDos, setToDos] = useState<ToDoItem[]>([]);
+  const [toDos, setToDos] = useState<ToDoItem[]>([]);
+
+  // State for loading so the toDos state doesnt change until data is loaded
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // Selected filter
   const [selectedFilter, setSelectedFilter] = useState<String>("ALL");
@@ -77,6 +81,45 @@ function App() {
     if (selectedFilter === "COMPLETE") return item.completed;
     return true;
   });
+
+
+  // Save toDos to storage
+  useEffect(() => {
+    const saveToDos = async () => {
+      // Return if data not loaded
+      if(!isLoaded) return;
+
+      try{
+        await AsyncStorage.setItem("ToDos", JSON.stringify(toDos));
+        console.log("Items saved!", JSON.stringify(toDos));
+      }catch(err){
+        console.log("Couldn't save todos", err);
+      }
+    };
+
+    saveToDos();
+  }, [toDos]);
+
+  // Load toDos from storage
+  useEffect(() => {
+    const loadToDos = async () => {
+      try{
+        let nToDos: ToDoItem[] = [];
+        const jsonToDos = await AsyncStorage.getItem("ToDos");
+
+        if(jsonToDos !== null) nToDos = JSON.parse(jsonToDos) as ToDoItem[];
+        
+        setToDos(nToDos);
+        console.log("ToDos fetched!", jsonToDos);
+      }catch(err){
+        console.log("Couldn't fetch data", err);
+      }finally{
+        setIsLoaded(true);
+      }
+    };
+
+    loadToDos();
+  }, []);
 
   return (
     <SafeAreaProvider>
