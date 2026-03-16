@@ -8,7 +8,7 @@ interface Props {
 };
 
 export const ToDoInput: React.FC<Props> = ({addToDoItem}) => {
-    const [inputValue, setInputValue] = useState<string>('')
+    const [inputValue, setInputValue] = useState<string>('');
 
     return(
         <View style={styles.textInputContainer}>

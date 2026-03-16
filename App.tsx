@@ -1,15 +1,10 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+// App.tsx
 
 import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import {
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
-import { Header } from './src/components/header/Header';
+import { Header } from './src/components/Header/Header';
 import { Footer } from './src/components/Footer/Footer';
 import { ToDoInput } from './src/components/ToDoInput/ToDoInput';
 import { useEffect, useState } from 'react';
